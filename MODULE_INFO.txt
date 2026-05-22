@@ -1,0 +1,51 @@
+================================================================
+  MEDICAL APPOINTMENT SCHEDULING SYSTEM
+  Group    : KD_WD_G56
+  Module   : Module 02 - Provider / Staff Management
+  Student  : IT25103821 - Adhikari A.M.S.T.
+================================================================
+
+DESCRIPTION
+-----------
+  This module manages healthcare providers and their schedules.
+  Staff can add availability slots, view weekly schedules,
+  update working hours, and remove blocked time slots.
+
+CRUD OPERATIONS
+---------------
+  CREATE  ->  ProviderController.java - Add a new provider/staff profile
+  READ    ->  ProviderController.java - View daily/weekly schedules or all providers
+  UPDATE  ->  ProviderController.java - Modify provider details or fee
+  DELETE  ->  SlotController.java     - Remove blocked or unavailable time slots
+
+DATA FILES  (inside /data folder)
+----------------------------------
+  slots.txt        - Doctor availability slots
+    Format: DoctorID|Date|Time|Status
+
+  providers.txt    - Healthcare provider profiles
+    Format: DoctorID|Name|Specialization|Fee|Photo(base64)
+
+IMPLEMENTATION NOTE
+-------------------
+  The duplicate standalone Create/Read/Update/Delete servlet files were
+  removed because they are not used by the live Spring Boot system.
+  This folder contains the assigned Java files copied from the main project:
+
+    src/main/java/com/hospital/controllers/ProviderController.java
+    src/main/java/com/hospital/controllers/SlotController.java
+    src/main/java/com/hospital/models/Doctor.java
+    src/main/java/com/hospital/models/Provider.java
+    src/main/java/com/hospital/services/IScheduleManager.java
+
+SPRING BOOT ENDPOINTS (Live System)
+----------------------------------
+  POST   /api/slots/add               -> Add availability slot (Create)
+  GET    /api/slots/doctor/{docId}    -> View doctor schedule (Read)
+  GET    /api/providers/all           -> View all providers (Read)
+  PUT    /api/providers/update/{id}   -> Update provider (Update)
+  PUT    /api/slots/update            -> Update an available doctor's time slot (Update)
+  DELETE /api/slots/delete            -> Remove slot (Delete)
+  Staff UI refreshes the doctor's availability list after add/update/delete.
+
+================================================================

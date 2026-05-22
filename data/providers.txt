@@ -1,0 +1,5 @@
+DOC1001|Dr. Karunasena M.B.|Cardiologist|3500|
+DOC1002|Dr. Perera A.S.|Neurologist|4000|
+DOC1003|Dr. Fernando B.T.|Pediatrician|2500|
+DOC1004|Dr. Silva R.K.|Orthopedic Surgeon|5000|
+DOC1005|Dr. Wijesinghe N.D.|General Medicine|2000|
