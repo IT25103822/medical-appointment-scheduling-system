@@ -1,0 +1,48 @@
+================================================================
+  MEDICAL APPOINTMENT SCHEDULING SYSTEM
+  Group    : KD_WD_G56
+  Module   : Module 01 - Patient / User Management
+  Student  : IT25103820 - Jayasundara U.R.
+================================================================
+
+DESCRIPTION
+-----------
+  This module handles all patient-facing appointment operations:
+  booking, viewing history, rescheduling, and cancellation.
+
+CRUD OPERATIONS
+---------------
+  CREATE  ->  SchedulingController.java - Book a new appointment for a patient
+  READ    ->  PatientController.java    - View patient details and appointment history
+  UPDATE  ->  PatientController.java    - Update patient profile details
+  DELETE  ->  SchedulingController.java - Cancel appointments
+
+DATA FILES  (inside /data folder)
+----------------------------------
+  appointments.txt   - Active appointment records
+    Format: ApptID|PatientID|DoctorID|DoctorName|Type|Status|Timestamp|SlotDate|SlotTime
+
+  slots.txt          - Available time slots per doctor
+    Format: DoctorID|Date|Time|Status
+
+IMPLEMENTATION NOTE
+-------------------
+  The duplicate standalone Create/Read/Update/Delete servlet files were
+  removed because they are not used by the live Spring Boot system.
+  This folder contains the assigned Java files copied from the main project:
+
+    src/main/java/com/hospital/controllers/PatientController.java
+    src/main/java/com/hospital/controllers/SchedulingController.java
+    src/main/java/com/hospital/models/Appointment.java
+    src/main/java/com/hospital/models/Patient.java
+    src/main/java/com/hospital/models/User.java
+
+SPRING BOOT ENDPOINTS (Live System)
+----------------------------------
+  POST   /api/scheduling/book           -> Book appointment (Create)
+  GET    /api/slots/doctor/{docId}      -> View available slots (Read)
+  GET    /api/scheduling/patient/{pid}  -> View appointment history (Read)
+  DELETE /api/scheduling/cancel/{id}    -> Cancel appointment and return reschedule details (Delete)
+  Patient UI: Cancel & Reschedule opens the booking screen again with the same appointment type.
+
+================================================================
