@@ -1,0 +1,6 @@
+REC10001|P1001|DOC1001|APT10001|Patient presents with chest pain and shortness of breath. BP: 140/90.|Blood pressure elevated. ECG: Normal sinus rhythm.|2025-05-10 09:30:00|false
+REC10002|P1002|DOC1002|APT10002|Severe migraine headache 3 days duration. No fever.|MRI: No abnormalities detected.|2025-05-11 14:00:00|false
+REC10003|P1001|DOC1003|APT10003|Follow-up for previous cardiac consultation. Feeling better.|Blood test: Cholesterol slightly elevated.|2025-05-08 10:00:00|true
+REC10004|P1003|DOC1001|APT10004|Annual cardiac checkup. No complaints.|ECG: Normal. Cholesterol: Normal.|2025-05-12 09:00:00|false
+REC10005|P1004|DOC1002|APT10005|Recurring headaches. Stress-related.|Blood test: All within normal range.|2025-05-13 14:00:00|false
+REC10006|P1005|DOC1003|APT10006|Child with fever and cough. Possible viral infection.|Throat swab: Negative for strep.|2025-05-07 11:00:00|true

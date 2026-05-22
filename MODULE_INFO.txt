@@ -1,0 +1,46 @@
+================================================================
+  MEDICAL APPOINTMENT SCHEDULING SYSTEM
+  Group    : KD_WD_G56
+  Module   : Module 04 - EHR / EMR Integration
+  Student  : IT25103824 - Yapa Bandara Y.M.M.P.P.D.
+================================================================
+
+DESCRIPTION
+-----------
+  This module integrates the appointment system with Electronic
+  Health Records (EHR/EMR). It manages patient encounters,
+  clinical notes, lab results, and visit archiving.
+
+CRUD OPERATIONS
+---------------
+  CREATE  ->  EHRController.java   - Add a new patient encounter/record
+  READ    ->  EHRController.java   - Retrieve medical records for a patient
+  UPDATE  ->  EHRController.java   - Append clinical notes or lab results
+  DELETE  ->  EHRController.java   - Archive completed visits (soft delete)
+
+DATA FILES  (inside /data folder)
+----------------------------------
+  medical_records.txt    - Patient EHR records
+    Format: RecordID|PatientID|ProviderID|AppointmentID|Notes|LabResults|CreatedAt|Archived
+
+IMPLEMENTATION NOTE
+-------------------
+  The duplicate standalone Create/Read/Update/Delete servlet files were
+  removed because they are not used by the live Spring Boot system.
+  This folder contains the assigned Java files copied from the main project:
+
+    src/main/java/com/hospital/controllers/EHRController.java
+    src/main/java/com/hospital/models/MedicalRecord.java
+    src/main/java/com/hospital/models/Appointment.java
+    src/main/java/com/hospital/models/Patient.java
+    src/main/java/com/hospital/models/Provider.java
+
+SPRING BOOT ENDPOINTS (Live System)
+----------------------------------
+  POST   /api/ehr/create              -> Add encounter (Create)
+  GET    /api/ehr/{patientId}         -> Get patient records (Read)
+  GET    /api/ehr/all                 -> Get all records (Read)
+  PUT    /api/ehr/update/{recordId}   -> Append notes/labs (Update)
+  DELETE /api/ehr/archive/{recordId}  -> Archive visit (Delete)
+
+================================================================
