@@ -3,4 +3,3 @@ USR1002|staff01|staff01@citycare.lk|STAFF|staff123|true|2025-01-15 09:00:00
 USR1003|billing01|billing@citycare.lk|BILLING|bill123|true|2025-02-01 08:00:00
 USR1004|reception01|reception@citycare.lk|RECEPTIONIST|recep123|true|2025-02-10 08:00:00
 USR1005|oldstaff|oldstaff@citycare.lk|STAFF|old123|false|2025-03-01 09:00:00
-USR1006|doctor01|doctor01@citycare.lk|DOCTOR|doc123|true|2025-03-15 08:00:00
