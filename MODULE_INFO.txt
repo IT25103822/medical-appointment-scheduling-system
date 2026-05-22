@@ -1,0 +1,50 @@
+================================================================
+  MEDICAL APPOINTMENT SCHEDULING SYSTEM
+  Group    : KD_WD_G56
+  Module   : Module 06 - Admin & System Management
+  Student  : IT25103826 - Dasanayake W.G.A.N.
+================================================================
+
+DESCRIPTION
+-----------
+  This module provides overall system control including user
+  and role management, security monitoring, audit log viewing,
+  and user deactivation. All actions are logged for compliance.
+
+CRUD OPERATIONS
+---------------
+  CREATE  ->  AdminController.java - Add a new system user or role
+  READ    ->  AdminController.java - View system users, logs, and audit reports
+  UPDATE  ->  AdminController.java - Update user permissions and roles
+  DELETE  ->  AdminController.java - Deactivate a user account (soft delete)
+
+DATA FILES  (inside /data folder)
+----------------------------------
+  admin_users.txt    - System user accounts
+    Format: UserID|Username|Email|Role|Password|Active|CreatedAt
+
+  system_logs.txt    - Audit trail of all system actions
+    Format: Timestamp|UserID|Action|Details
+
+IMPLEMENTATION NOTE
+-------------------
+  The duplicate standalone Create/Read/Update/Delete servlet files were
+  removed because they are not used by the live Spring Boot system.
+  This folder contains the assigned Java files copied from the main project:
+
+    src/main/java/com/hospital/controllers/AdminController.java
+    src/main/java/com/hospital/models/SystemUser.java
+    src/main/java/com/hospital/models/User.java
+    src/main/java/com/hospital/MedicalApp.java
+    src/main/java/com/hospital/TestController.java
+
+SPRING BOOT ENDPOINTS (Live System)
+----------------------------------
+  POST   /api/admin/users/add                  -> Add user (Create)
+  GET    /api/admin/users/all                  -> View all users (Read)
+  GET    /api/admin/logs                       -> View system logs (Read)
+  PUT    /api/admin/users/update/{userId}      -> Update user/role (Update)
+  DELETE /api/admin/users/deactivate/{userId}  -> Deactivate user (Delete)
+  Admin billing table includes an invoice Delete/Void action for billing control.
+
+================================================================
