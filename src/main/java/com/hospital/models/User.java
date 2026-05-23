@@ -4,7 +4,7 @@ public class User {
     private String id;
     private String name;
 
-    // 1. Empty Constructor (Spring Boot වලට අත්‍යවශ්‍යයි)
+    // 1. Empty Constructor 
     public User() {
     }
 
