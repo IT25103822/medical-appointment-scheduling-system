@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Doctors - CityCare Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .header-section { padding: 56px 20px 34px; text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, #0f172a, #172554 58%, #1d4ed8); color: white; }
+        .header-section h1 { margin: 0; font-size: 2.5rem; color: #ffffff; }
+        .header-section p { margin-top: 10px; color: rgba(255,255,255,.8); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 24px; padding: 0 20px 50px; max-width: 1200px; margin: auto; }
+        .doc-card { background: rgba(255,255,255,.92); padding: 24px; border-radius: 22px; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 22px; border: 1px solid rgba(148,163,184,.2); transition: transform .2s ease, box-shadow .2s ease; }
+        .doc-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+        .doc-img { width: 118px; height: 118px; border-radius: 28px; object-fit: cover; border: 3px solid #dbeafe; background: #eff6ff; flex-shrink: 0; }
+        .search-bar { max-width: 620px; margin: -16px auto 34px; background: rgba(255,255,255,.92); padding: 14px; border-radius: 18px; box-shadow: var(--shadow-md); display: flex; border: 1px solid rgba(148,163,184,.16); }
+        .search-bar input { border: 0; background: transparent; font-size: 1rem; }
+        @media (max-width: 640px) { .doc-card { flex-direction: column; text-align: center; } .doc-img { width: 100px; height: 100px; border-radius: 22px; } }
+    </style>
+</head>
+<body style="background: #f1f5f9; margin: 0; padding: 0;">
+
+<nav style="display:flex; justify-content:space-between; align-items:center; padding:1.2rem 3rem; background: #1e293b;">
+    <div style="color:white; font-weight:bold; font-size:1.3rem;">CityCare Hospital</div>
+    <div>
+        <a href="index.html" class="btn btn-secondary" style="text-decoration:none; background:#475569; color:white; padding:8px 15px; border-radius:8px;">Home</a>
+        <a href="patient.html" class="btn" style="text-decoration:none; margin-left:10px; background:#3b82f6; color:white; padding:8px 15px; border-radius:8px;">Patient Portal</a>
+    </div>
+</nav>
+
+<div class="header-section">
+    <h1>Meet Our Specialists</h1>
+    <p>Find the right doctor for your medical needs</p>
+</div>
+
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search doctors by name or specialty" onkeyup="filterDoctors()">
+</div>
+
+<div class="grid-container" id="doctorsList">
+    <p style="text-align:center; width:100%; color:#64748b;">Loading doctors...</p>
+</div>
+
+<script>
+    let allDoctors = [];
+
+    window.onload = async function() {
+        try {
+            const url = '/api/providers/all?t=' + new Date().getTime();
+            const res = await fetch(url, { cache: 'no-store' });
+
+            if(res.ok) {
+                allDoctors = await res.json();
+                renderDoctors(allDoctors);
+            } else {
+                document.getElementById('doctorsList').innerHTML = "<p style='text-align:center; width:100%; color:#ef4444;'>Failed to load doctors.</p>";
+            }
+        } catch (e) {
+            document.getElementById('doctorsList').innerHTML = "<p style='text-align:center; width:100%; color:#ef4444;'>Server connection error.</p>";
+        }
+    };
+
+    function filterDoctors() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = allDoctors.filter(d =>
+            d.name.toLowerCase().includes(query) ||
+            d.specialization.toLowerCase().includes(query)
+        );
+        renderDoctors(filtered);
+    }
+
+    function renderDoctors(docs) {
+        const list = document.getElementById('doctorsList');
+        if(docs.length === 0) {
+            list.innerHTML = "<p style='text-align:center; width:100%; color:#64748b;'>No doctors found matching your search.</p>";
+            return;
+        }
+
+        list.innerHTML = docs.map(d => {
+            let defaultImg = `https://ui-avatars.com/api/?name=${d.name.replace(/\s/g, '+')}&background=eff6ff&color=3b82f6&size=200`;
+            let imgSrc = d.photo && d.photo.length > 50 ? d.photo : defaultImg;
+
+            return `
+                <div class="doc-card">
+                    <img src="${imgSrc}" class="doc-img" alt="Dr. ${d.name}">
+                    <div>
+                        <h3 style="margin:0 0 8px 0; color:#1e293b; font-size:1.45rem;">Dr. ${d.name}</h3>
+                        <span style="color:#1d4ed8; font-weight:bold; background:#eff6ff; padding:6px 15px; border-radius:15px; font-size:0.95rem; display:inline-block; margin-bottom:15px;">${d.specialization}</span>
+                        <p style="margin:0; color:#10b981; font-weight:bold; font-size:1.05rem;">Consultation Fee: Rs. ${d.fee}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+</script>
+</body>
+</html>

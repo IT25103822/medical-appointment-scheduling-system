@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login - CityCare</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-shell { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem; }
+        .login-card { width:min(440px, 100%); padding:2.2rem; text-align:center; }
+        .login-card h2 { margin-top:0; margin-bottom:.5rem; font-size:2rem; }
+        .login-card p { margin:0 0 1.2rem; font-size:.96rem; }
+        .login-card .btn { width:100%; padding:1rem; }
+    </style>
+</head>
+<body>
+
+<div class="login-shell">
+    <div class="info-box login-card">
+        <h2>Staff Access</h2>
+        <p>Please enter the staff security code.</p>
+        <input type="password" id="staffPass" placeholder="Enter staff password" style="margin:20px 0; text-align:center;">
+        <button class="btn" onclick="checkStaff()">Login to Staff Portal</button>
+        <a href="index.html" style="display:block; margin-top:20px; color:#64748b; text-decoration:none; font-size:0.95rem;">Back to Home</a>
+    </div>
+</div>
+
+<script>
+    function checkStaff() {
+        const pass = document.getElementById('staffPass').value;
+        if(pass === "staff123") {
+            sessionStorage.setItem('isStaff', 'true');
+            window.location.href = "staff.html";
+        } else {
+            alert("Incorrect staff password.");
+        }
+    }
+</script>
+</body>
+</html>
