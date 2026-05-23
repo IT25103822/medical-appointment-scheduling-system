@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - CityCare</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .landing-shell { min-height: 100vh; display: flex; flex-direction: column; }
+    .landing-nav { position: static; background: transparent; border: 0; box-shadow: none; backdrop-filter: none; }
+    .landing-nav .brand { font-size: 1.7rem; font-weight: 800; color: #10233d; letter-spacing: -0.03em; }
+    .hero { width: min(1120px, calc(100% - 2rem)); margin: auto; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 2rem; align-items: center; padding: 2rem 0 4rem; }
+    .hero-copy { background: rgba(255,255,255,0.74); border: 1px solid rgba(148,163,184,0.2); box-shadow: var(--shadow-lg); border-radius: 32px; padding: 3rem; }
+    .eyebrow { display:inline-flex; align-items:center; padding:.5rem .85rem; border-radius:999px; background:#dbeafe; color:#1d4ed8; font-size:.8rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; }
+    .hero h1 { font-size: clamp(2.8rem, 6vw, 4.9rem); margin: 1rem 0 1rem; }
+    .hero p { font-size: 1.08rem; max-width: 44rem; margin: 0 0 2rem; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:1rem; }
+    .hero-btn, .portal-btn { display:inline-flex; align-items:center; justify-content:center; padding:1rem 1.5rem; border-radius:999px; font-weight:800; text-decoration:none; transition:transform .18s ease, box-shadow .18s ease; }
+    .hero-btn { background:#ffffff; color:#1d4ed8; border:1px solid rgba(37,99,235,.22); box-shadow:0 14px 30px rgba(37,99,235,.12); }
+    .portal-btn { background:linear-gradient(135deg, #0f766e, #0891b2); color:white; box-shadow:0 16px 34px rgba(8,145,178,.24); }
+    .hero-btn:hover, .portal-btn:hover { transform: translateY(-2px); }
+    .hero-panel { display:grid; gap:1rem; }
+    .hero-card { background: rgba(255,255,255,0.82); border:1px solid rgba(148,163,184,.22); border-radius:26px; box-shadow: var(--shadow-md); padding:1.4rem; }
+    .hero-card strong { display:block; color:#10233d; font-size:1.05rem; margin-bottom:.35rem; }
+    .metric-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:1rem; }
+    .metric { background: linear-gradient(180deg, #ffffff, #f6faff); border:1px solid rgba(191,219,254,.6); border-radius:22px; padding:1.2rem; }
+    .metric .value { color:#0f1c2e; font-size:1.7rem; font-weight:800; }
+    .metric .label { color:#607086; font-size:.9rem; font-weight:700; }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; padding-top: 1rem; } .hero-copy { padding: 2rem; } }
+  </style>
+</head>
+<body>
+<div class="landing-shell">
+  <nav class="landing-nav">
+    <div class="nav-container" style="justify-content:center;">
+      <div class="brand">CityCare Hospital</div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Medical Appointment System</span>
+      <h1>Your care journey should feel clear, fast, and calm.</h1>
+      <p>Access doctors, appointments, billing, records, and staff operations from one clean portal designed to be easier to read and easier to use.</p>
+      <div class="hero-actions">
+        <a href="patient.html" class="portal-btn">Open Patient Portal</a>
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="hero-card">
+        <strong>Quick access</strong>
+        <span>Patients can log in, review appointments, view payment history, and book new visits from a single screen.</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="value">6</div>
+          <div class="label">Core modules</div>
+        </div>
+        <div class="metric">
+          <div class="value">24/7</div>
+          <div class="label">Portal availability</div>
+        </div>
+        <div class="metric">
+          <div class="value">1</div>
+          <div class="label">Unified system</div>
+        </div>
+        <div class="metric">
+          <div class="value">100%</div>
+          <div class="label">Web-based flow</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scheduling Engine | CityCare Hospital</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{background:#f1f5f9;font-family:'Inter',sans-serif;}
+  .sched-container{max-width:1100px;margin:40px auto;padding:0 20px;}
+  .page-header{background:linear-gradient(135deg,#7c3aed,#8b5cf6);color:#fff;border-radius:16px;padding:32px;margin-bottom:32px;}
+  .page-header h1{margin:0 0 8px;font-size:1.8rem;}
+  .page-header p{margin:0;opacity:.85;}
+  .card{background:#fff;border-radius:14px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.07);}
+  .card h2{font-size:1.1rem;font-weight:700;color:#1e293b;margin:0 0 20px;border-bottom:2px solid #f5f3ff;padding-bottom:10px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .form-group{display:flex;flex-direction:column;gap:6px;}
+  .form-group label{font-size:.82rem;font-weight:600;color:#475569;}
+  .form-group input,.form-group select{border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:.9rem;outline:none;transition:border-color .2s;}
+  .form-group input:focus,.form-group select:focus{border-color:#8b5cf6;}
+  .btn{padding:10px 22px;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:.9rem;transition:all .2s;}
+  .btn-primary{background:#8b5cf6;color:#fff;}.btn-primary:hover{background:#7c3aed;}
+  .btn-warning{background:#f59e0b;color:#fff;}.btn-warning:hover{background:#d97706;}
+  .btn-danger{background:#ef4444;color:#fff;}.btn-danger:hover{background:#dc2626;}
+  .btn-secondary{background:#64748b;color:#fff;}.btn-secondary:hover{background:#475569;}
+  .msg{padding:10px 16px;border-radius:8px;margin-top:12px;font-size:.88rem;display:none;}
+  .msg.success{background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe;display:block;}
+  .msg.error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca;display:block;}
+  .slot-table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  .slot-table th{background:#f5f3ff;color:#7c3aed;font-weight:700;padding:10px 12px;text-align:left;}
+  .slot-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;}
+  .slot-table tr:hover td{background:#f8fafc;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.74rem;font-weight:700;}
+  .badge-available{background:#dcfce7;color:#166534;}
+  .badge-booked{background:#dbeafe;color:#1e40af;}
+  .badge-expired{background:#f1f5f9;color:#64748b;}
+  .search-bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .search-bar input,.search-bar select{flex:1;min-width:160px;border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 14px;font-size:.9rem;outline:none;}
+  .search-bar input:focus,.search-bar select:focus{border-color:#8b5cf6;}
+  .module-badge{background:#f5f3ff;color:#7c3aed;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+  .group-badge{background:#ede9fe;color:#6d28d9;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+  @media(max-width:640px){.form-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<nav class="glass-nav">
+  <div class="nav-container">
+    <a class="nav-brand" href="index.html">🏥 CityCare</a>
+    <div class="nav-links">
+      <a href="patient.html">Patient</a>
+      <a href="provider.html">Provider</a>
+      <a href="scheduling.html" style="color:#8b5cf6;font-weight:700;">Scheduling</a>
+      <a href="ehr.html">EHR</a>
+      <a href="billing.html">Billing</a>
+      <a href="admin.html">Admin</a>
+    </div>
+  </div>
+</nav>
+
+<div class="sched-container">
+  <div class="page-header">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div>
+        <h1>📅 Scheduling Engine</h1>
+        <p>Time slot management — create, search, allocate, and expire appointment slots</p>
+      </div>
+      <div style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="module-badge">Module 03</span>
+        <span class="group-badge">KD_WD_G56</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE -->
+  <div class="card">
+    <h2>➕ CREATE — Generate Time Slot Based on Provider Availability</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Doctor ID *</label>
+        <input id="slot-docId" type="text" placeholder="e.g. DOC1001" oninput="loadDoctorName(this.value)">
+      </div>
+      <div class="form-group">
+        <label>Date *</label>
+        <input id="slot-date" type="date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Time *</label>
+        <input id="slot-time" type="time">
+      </div>
+      <div class="form-group">
+        <label>Appointment Type</label>
+        <select id="slot-type">
+          <option value="NORMAL">Normal</option>
+          <option value="EMERGENCY">Emergency</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="createSlot()">+ Add Slot</button>
+    <div id="create-msg" class="msg"></div>
+  </div>
+
+  <!-- READ -->
+  <div class="card">
+    <h2>🔍 READ — Search and Match Available Slots</h2>
+    <div class="search-bar">
+      <input id="search-docId" type="text" placeholder="Doctor ID (e.g. DOC1001)">
+      <input id="search-date"  type="date">
+      <button class="btn btn-secondary" onclick="searchSlots()">Search Slots</button>
+      <button class="btn btn-secondary" onclick="loadAllSlots()">Load All</button>
+    </div>
+    <div id="slots-container">
+      <p style="color:#94a3b8;font-size:.9rem;">Search by doctor ID or date, or load all available slots.</p>
+    </div>
+  </div>
+
+  <!-- UPDATE -->
+  <div class="card">
+    <h2>♻️ UPDATE — Allocate / Reassign Slot</h2>
+    <p style="font-size:.86rem;color:#64748b;margin-bottom:16px;">Update a slot's doctor assignment or date/time. Used for reassigning an existing slot to a different provider.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Current Doctor ID *</label>
+        <input id="upd-oldDocId" type="text" placeholder="e.g. DOC1001">
+      </div>
+      <div class="form-group">
+        <label>Current Date *</label>
+        <input id="upd-oldDate" type="date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Current Time *</label>
+        <input id="upd-oldTime" type="time">
+      </div>
+      <div class="form-group">
+        <label>Reassign to Doctor ID</label>
+        <input id="upd-newDocId" type="text" placeholder="Leave blank to keep same">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>New Date</label>
+        <input id="upd-newDate" type="date">
+      </div>
+      <div class="form-group">
+        <label>New Time</label>
+        <input id="upd-newTime" type="time">
+      </div>
+    </div>
+    <button class="btn btn-warning" onclick="updateSlot()">Reassign Slot</button>
+    <div id="update-msg" class="msg"></div>
+  </div>
+
+  <!-- DELETE -->
+  <div class="card">
+    <h2>🗑️ DELETE — Expire / Remove Unused Slot</h2>
+    <p style="font-size:.86rem;color:#64748b;margin-bottom:16px;">Remove a specific slot for a doctor on a given date and time. Only available (unbooked) slots can be deleted.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Doctor ID *</label>
+        <input id="del-docId" type="text" placeholder="e.g. DOC1001">
+      </div>
+      <div class="form-group">
+        <label>Date *</label>
+        <input id="del-date" type="date">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Time *</label>
+        <input id="del-time" type="time">
+      </div>
+    </div>
+    <button class="btn btn-danger" onclick="deleteSlot()">Remove Slot</button>
+    <div id="delete-msg" class="msg"></div>
+  </div>
+</div>
+
+<script>
+function showMsg(id, text, ok) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'success' : 'error');
+}
+function fmt(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':');
+  const hr = parseInt(h);
+  return `${hr > 12 ? hr - 12 : hr || 12}:${m} ${hr >= 12 ? 'PM' : 'AM'}`;
+}
+
+async function createSlot() {
+  const docId = document.getElementById('slot-docId').value.trim();
+  const date  = document.getElementById('slot-date').value;
+  const time  = fmt(document.getElementById('slot-time').value);
+  if (!docId || !date || !time) { showMsg('create-msg','All fields are required.',false); return; }
+  const r = await fetch('/api/slots/add', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({docId, date, time}) });
+  const d = await r.json();
+  showMsg('create-msg', d.message || (d.success ? `Slot added for ${docId} on ${date} at ${time}.` : 'Failed to add slot.'), d.success === true);
+}
+
+async function searchSlots() {
+  const docId = document.getElementById('search-docId').value.trim();
+  if (!docId) { document.getElementById('slots-container').innerHTML='<p style="color:red;font-size:.9rem;">Enter a Doctor ID.</p>'; return; }
+  const r = await fetch(`/api/slots/doctor/${docId}`);
+  const d = await r.json();
+  const slots = Array.isArray(d) ? d : (d.slots || []);
+  const filterDate = document.getElementById('search-date').value;
+  renderSlots(filterDate ? slots.filter(s=>(typeof s==='string'?s:s.date||'').includes(filterDate)) : slots);
+}
+
+async function loadAllSlots() {
+  const r = await fetch('/api/slots/all');
+  const d = await r.json();
+  renderSlots(Array.isArray(d) ? d : (d.slots||[]));
+}
+
+function renderSlots(slots) {
+  const c = document.getElementById('slots-container');
+  if (!slots.length) { c.innerHTML='<p style="color:#94a3b8;font-size:.9rem;">No slots found.</p>'; return; }
+  c.innerHTML=`<table class="slot-table">
+    <thead><tr><th>Doctor ID</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+    <tbody>${slots.map(s=>`<tr>
+      <td><b>${s.doctorId||'-'}</b></td><td>${s.date||'-'}</td><td>${s.time||'-'}</td>
+      <td><span class="badge badge-available">${s.status||'AVAILABLE'}</span></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+async function updateSlot() {
+  const body = {
+    docId: document.getElementById('upd-oldDocId').value.trim(),
+    date:  document.getElementById('upd-oldDate').value,
+    time:  fmt(document.getElementById('upd-oldTime').value)
+  };
+  if (!body.docId || !body.date || !body.time) { showMsg('update-msg','Doctor ID, date and time are required.',false); return; }
+  const newDoc  = document.getElementById('upd-newDocId').value.trim();
+  const newDate = document.getElementById('upd-newDate').value;
+  const newTime = fmt(document.getElementById('upd-newTime').value);
+  if (newDoc)  body.newDocId = newDoc;
+  if (newDate) body.newDate  = newDate;
+  if (newTime) body.newTime  = newTime;
+  // Delete old then add new
+  await fetch('/api/slots/delete', { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify({docId:body.docId,date:body.date,time:body.time}) });
+  const addBody = { docId: newDoc||body.docId, date: newDate||body.date, time: newTime||body.time };
+  const r = await fetch('/api/slots/add', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(addBody) });
+  const d = await r.json();
+  showMsg('update-msg', d.message||(d.success?'Slot reassigned successfully.':'Failed to reassign.'), d.success === true);
+}
+
+async function deleteSlot() {
+  const docId = document.getElementById('del-docId').value.trim();
+  const date  = document.getElementById('del-date').value;
+  const time  = fmt(document.getElementById('del-time').value);
+  if (!docId || !date || !time) { showMsg('delete-msg','All fields are required.',false); return; }
+  if (!confirm(`Delete slot for ${docId} on ${date} at ${time}?`)) return;
+  const r = await fetch('/api/slots/delete', { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify({docId,date,time}) });
+  const d = await r.json();
+  showMsg('delete-msg', d.message||(d.success?'Slot removed.':'Failed.'), d.success === true);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - CityCare</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; margin: 0; }
+        .nav { display: flex; justify-content: space-between; align-items: center; padding: 1rem 3rem; background: #0f172a; color: white; }
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .info-box { background: white; padding: 25px; border-radius: 12px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+        /* Doctor Card Styles */
+        .doc-card { border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 20px; background: white; }
+        .doc-info { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .doc-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid #3b82f6; }
+        .doc-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+        .delete-doctor-btn { background:#ef4444; color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:800; }
+        .delete-doctor-btn:hover { background:#b91c1c; }
+
+        /* Slot Input Styles */
+        .slot-section { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .slot-input-group { display: flex; gap: 10px; margin-top: 10px; }
+        .slot-input-group input { padding: 8px; border: 1px solid #ddd; border-radius: 6px; flex: 1; }
+
+        /* Slot Badge/Button Styles */
+        .slot-display { display: grid; gap: 10px; margin-top: 15px; }
+        .slot-badge {
+            display: grid; grid-template-columns: 1fr auto auto auto auto; gap: 8px; align-items: center; background: #eff6ff;
+            border: 1px solid #3b82f6; color: #3b82f6; padding: 5px 12px;
+            border-radius: 8px; font-size: 0.85rem; font-weight: bold;
+        }
+        .slot-badge input {
+            border: 1px solid #bfdbfe; border-radius: 6px; padding: 6px; min-width: 118px;
+        }
+        .slot-update-btn {
+            background:#f59e0b; color:#fff; border:none; padding:7px 12px;
+            border-radius:8px; cursor:pointer; font-weight:800;
+        }
+        .slot-update-btn:hover { background:#d97706; }
+        .del-btn {
+            background: none; border: none; color: #ef4444; font-size: 1.2rem;
+            cursor: pointer; margin-left: 8px; line-height: 1;
+        }
+        .del-btn:hover { color: #b91c1c; }
+
+        /* Table Styles */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #64748b; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .btn-sm { padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; background: #3b82f6; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div style="font-weight:bold; font-size:1.3rem;">🏥 CityCare Staff</div>
+    <button class="btn-sm" style="background:#ef4444;" onclick="staffLogout()">Logout</button>
+</div>
+
+<div class="container">
+
+    <div class="info-box">
+        <h3 style="margin-top:0;">📅 Today's Appointments</h3>
+        <div id="staffAList">Loading Appointments...</div>
+    </div>
+
+    <div class="info-box">
+        <h3 style="margin-top:0;">🩺 Doctor Availability & Slots</h3>
+        <div id="staffDList">Loading Doctors...</div>
+    </div>
+
+</div>
+
+<script>
+    // 🔒 Security: Check if Staff is logged in
+    window.onload = function() {
+        if(sessionStorage.getItem('isStaff') !== 'true') {
+            window.location.href = "staff-login.html";
+        } else {
+            loadAllData();
+        }
+    };
+
+    function staffLogout() {
+        sessionStorage.clear();
+        window.location.href = "index.html";
+    }
+
+    async function loadAllData() {
+        await loadAppointments();
+        await loadDoctors();
+    }
+
+    // --- 🩺 DOCTORS & SLOTS LOGIC ---
+
+    async function loadDoctors() {
+        try {
+            const res = await fetch('/api/providers/all');
+            const docs = await res.json();
+            const list = document.getElementById('staffDList');
+
+            list.innerHTML = docs.map(d => `
+                <div class="doc-card">
+                    <div class="doc-header">
+                        <div class="doc-info">
+                            <img src="${d.photo}" class="doc-img">
+                            <div>
+                                <b style="font-size:1.1rem;">Dr. ${d.name}</b><br>
+                                <span style="color:#3b82f6; font-size:0.9rem;">${d.specialization}</span>
+                            </div>
+                        </div>
+                        <button class="delete-doctor-btn" onclick="deleteDoctor('${d.id}', '${d.name}')">Delete Doctor</button>
+                    </div>
+
+                    <div class="slot-section">
+                        <small style="font-weight:bold; color:#64748b;">ADD NEW SLOT:</small>
+                        <div class="slot-input-group">
+                            <input type="date" id="date-${d.id}">
+                            <input type="time" id="time-${d.id}">
+                            <button class="btn-sm" style="background:#10b981;" onclick="addSlot('${d.id}')">Add</button>
+                        </div>
+
+                        <small style="display:block; font-weight:bold; color:#64748b; margin-top:16px;">CURRENT SLOTS - CHANGE DATE/TIME THEN CLICK UPDATE SLOT:</small>
+                        <div class="slot-display" id="slots-display-${d.id}">
+                            <small style="color:#94a3b8;">Loading slots...</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Load existing slots for each doctor
+            docs.forEach(d => loadSlots(d.id));
+
+        } catch(e) { console.error("Error loading doctors", e); }
+    }
+
+    async function addSlot(docId) {
+        const date = document.getElementById(`date-${docId}`).value;
+        const time = document.getElementById(`time-${docId}`).value;
+
+        if(!date || !time) return alert("කරුණාකර දිනය සහ වේලාව තෝරන්න!");
+
+        const formattedTime = new Date(`2000-01-01T${time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        const res = await fetch('/api/slots/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ doctorId: docId, date: date, time: formattedTime })
+        });
+
+        if(res.ok) {
+            loadSlots(docId); // Refresh only the slot buttons
+            document.getElementById(`date-${docId}`).value = "";
+            document.getElementById(`time-${docId}`).value = "";
+        }
+    }
+
+    async function deleteDoctor(docId, docName) {
+        if (!confirm(`Delete Dr. ${docName}? This removes the doctor from the staff/provider list.`)) return;
+
+        const res = await fetch(`/api/providers/delete/${encodeURIComponent(docId)}`, { method: 'DELETE' });
+        const data = await res.json();
+        alert(data.message || (data.success ? "Doctor deleted." : "Doctor delete failed."));
+        if (data.success) {
+            loadDoctors();
+        }
+    }
+
+    async function loadSlots(docId) {
+        try {
+            const res = await fetch(`/api/slots/doctor/${docId}`);
+            const slots = await res.json();
+            const display = document.getElementById(`slots-display-${docId}`);
+
+            if(slots.length === 0) {
+                display.innerHTML = "<small style='color:#94a3b8;'>No slots added yet.</small>";
+                return;
+            }
+
+            display.innerHTML = slots.map((s, idx) => `
+                <div class="slot-badge">
+                    <span>${s.date} | ${s.time}</span>
+                    <input type="date" id="edit-date-${docId}-${idx}" value="${s.date}">
+                    <input type="time" id="edit-time-${docId}-${idx}" value="${toTimeInput(s.time)}">
+                    <button class="slot-update-btn" onclick="updateSlot('${docId}', '${s.date}', '${s.time}', ${idx})">Update Slot</button>
+                    <button class="del-btn" onclick="deleteSlot('${docId}', '${s.date}', '${s.time}')">&times;</button>
+                </div>
+            `).join('');
+        } catch(e) { console.error("Error loading slots"); }
+    }
+
+    function toTimeInput(value) {
+        if (!value) return "";
+        const match = value.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+        if (!match) return value;
+        let hour = parseInt(match[1], 10);
+        const minute = match[2];
+        const meridiem = match[3].toUpperCase();
+        if (meridiem === "PM" && hour < 12) hour += 12;
+        if (meridiem === "AM" && hour === 12) hour = 0;
+        return `${String(hour).padStart(2, "0")}:${minute}`;
+    }
+
+    function formatTime(value) {
+        if (!value) return "";
+        const [h, m] = value.split(":");
+        const hour = parseInt(h, 10);
+        const displayHour = hour > 12 ? hour - 12 : hour || 12;
+        return `${String(displayHour).padStart(2, "0")}:${m} ${hour >= 12 ? "PM" : "AM"}`;
+    }
+
+    async function updateSlot(docId, date, time, idx) {
+        const newDate = document.getElementById(`edit-date-${docId}-${idx}`).value;
+        const newTime = formatTime(document.getElementById(`edit-time-${docId}-${idx}`).value);
+        if (!newDate || !newTime) return alert("Please select the updated date and time.");
+
+        const res = await fetch('/api/slots/update', {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ doctorId: docId, date, time, newDate, newTime })
+        });
+        const data = await res.json();
+        alert(data.message || (data.success ? "Slot updated." : "Slot update failed."));
+        if (data.success) loadSlots(docId);
+    }
+
+    async function deleteSlot(docId, date, time) {
+        if(!confirm("මෙම Slot එක ඉවත් කිරීමට අවශ්‍යද?")) return;
+
+        const params = new URLSearchParams({ docId, date, time });
+        const res = await fetch(`/api/slots/delete?${params.toString()}`, {
+            method: 'DELETE'
+        });
+
+        if(res.ok) {
+            loadSlots(docId);
+        }
+    }
+
+    // --- 📅 APPOINTMENTS LOGIC ---
+
+    async function loadAppointments() {
+        try {
+            const res = await fetch('/api/scheduling/all');
+            const appts = await res.json();
+            const aList = document.getElementById('staffAList');
+
+            if(appts.length === 0) {
+                aList.innerHTML = "<p>No appointments found.</p>";
+                return;
+            }
+
+            aList.innerHTML = `
+                <table>
+                    <tr><th>ID</th><th>Patient</th><th>Slot Date</th><th>Slot Time</th><th>Doctor</th><th>Status</th><th>Action</th></tr>
+                    ${appts.reverse().map(a => `
+                    <tr>
+                        <td>#${a.apptId}</td>
+                        <td>${a.patientId}</td>
+                        <td>${a.slotDate || '-'}</td>
+                        <td>${a.slotTime || '-'}</td>
+                        <td>Dr. ${a.doctorName}</td>
+                        <td><b style="color:${a.status === 'DONE' ? '#10b981' : '#f59e0b'}">${a.status}</b></td>
+                        <td>
+                            ${a.status !== 'DONE' ? `<button class="btn-sm" onclick="markDone('${a.apptId}')">Done</button>` : '✔️'}
+                        </td>
+                    </tr>`).join('')}
+                </table>`;
+        } catch(e) { aList.innerHTML = "Error loading appointments."; }
+    }
+
+    async function markDone(id) {
+        await fetch('/api/scheduling/done/' + id, { method: 'PUT' });
+        loadAppointments();
+    }
+</script>
+</body>
+</html>
