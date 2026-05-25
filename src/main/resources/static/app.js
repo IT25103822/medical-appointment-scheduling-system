@@ -1,6 +1,6 @@
 async function loadPatientData() {
     try {
-        // Backend API endpoint eka call කරනවා
+        // Backend API endpoint eka call 
         const response = await fetch('http://localhost:8080/api/patients/info');
         const data = await response.json();
 
