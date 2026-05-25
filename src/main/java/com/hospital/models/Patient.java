@@ -6,7 +6,7 @@ public class Patient extends User {
     private String mobile;
     private String medicalHistory;
 
-    // 1. Empty Constructor (Must for Spring Boot)
+    // 1. Empty Constructor (Spring Boot)
     public Patient() {
         super();
     }
