@@ -5,7 +5,7 @@ public class Provider {
     private String name;
     private String specialization;
 
-    // This empty constructor is must
+    // this empty constructor is must
     public Provider() {}
 
     // Getters and Setters
