@@ -210,7 +210,6 @@
         const displayHour = hour > 12 ? hour - 12 : hour || 12;
         return `${String(displayHour).padStart(2, "0")}:${m} ${hour >= 12 ? "PM" : "AM"}`;
     }
-
     async function updateSlot(docId, date, time, idx) {
         const newDate = document.getElementById(`edit-date-${docId}-${idx}`).value;
         const newTime = formatTime(document.getElementById(`edit-time-${docId}-${idx}`).value);
