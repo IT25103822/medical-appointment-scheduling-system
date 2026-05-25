@@ -6,6 +6,6 @@ import java.util.List;
 public interface IScheduleManager {
     String addDoctor(Doctor doctor);
     List<Doctor> getAllDoctors();
-    String updateDoctor(String id, Doctor doctor); // අලුතින් දැම්මා
-    String deleteDoctor(String id);                // අලුතින් දැම්මා
+    String updateDoctor(String id, Doctor doctor); // Added updateDoctor method
+    String deleteDoctor(String id);                // Added deleteDoctor method
 }
