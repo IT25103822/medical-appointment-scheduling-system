@@ -9,9 +9,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-@RestController
-@RequestMapping("/api/providers")
-@CrossOrigin
+@RestController //Marks class as a REST controller
+@RequestMapping("/api/providers") //Maps URL paths to the class/method
+@CrossOrigin //Enables CORS
 public class ProviderController {
 
     private static final String FILE_PATH = "data/providers.txt";
